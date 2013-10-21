@@ -28,11 +28,8 @@ describe('client-tests', function() {
             	console.log(response.body);
             	expect(response.error).to.be(null);
             	
- 
-            	
             	if (response.error == null)
             		createdId = response.body.data[0].id;
-            	
             	
             	callback(response.error);
             	
@@ -41,6 +38,27 @@ describe('client-tests', function() {
         });
 
     });
+    
+    describe('test-getByID', function() {
+
+        it('should findOne object of User by ID', function (callback) {
+
+        	restack_client.GET('data', 'User', {id:createdId}, null, function(response){
+        		  
+        		 console.log(response.body);
+        		 
+        		 expect(response.error).to.be(null);
+        		 expect(response.body.status).to.be('OK');
+             	 expect(response.body.data.length).to.be(1);
+             	 
+        		 callback();
+       		 
+       	 	});
+        
+        });
+    });
+    
+
     
     describe('test-create-many', function() {
 
@@ -75,6 +93,55 @@ describe('client-tests', function() {
         });
 
     });
+    
+    describe('test-create-many-static', function() {
+
+        it('should create 2 object of StaticTest', function(callback) {
+
+            var statics = [{
+                property1: 'value1',
+                property2: 'value2'
+            },{
+                property1: 'value1',
+                property2: 'value2'
+            }];
+
+            //POST:function(area, type, data, headers, done){
+            restack_client.POST('data', 'StaticTest', statics, null, function(response){
+            	
+            	console.log(response.body);
+            	
+            	expect(response.error).to.be(null);
+            	expect(response.body.status).to.be('OK');
+            	expect(response.body.data.length).to.be(2);
+            	
+            	callback();
+            });
+            
+        });
+
+    });
+    
+    describe('test-getAll', function() {
+
+        it('should find all objects of static', function (callback) {
+
+        	 restack_client.GET('data', 'StaticTest', null, null, function(response){
+        		 
+        		 console.log(response.body);
+        		 
+        		 expect(response.error).to.be(null);
+        		 expect(response.body.status).to.be('OK');
+             	 expect(response.body.data.length > 2).to.be(true);
+             	 
+        		 callback();
+        		 
+        	 });
+        	
+        });
+    });
+  
+    /*
     
     describe('test-update', function() {
 
@@ -154,25 +221,10 @@ describe('client-tests', function() {
         });
     });
     
+    */
+    
     /*
-    describe('test-getByID', function() {
-
-        it('should findOne object of User by ID', function (callback) {
-
-        	restack_client.GET('data', 'User', {id:createdId}, null, function(response){
-        		  
-        		 console.log(response.body);
-        		 
-        		 expect(response.error).to.be(null);
-        		 expect(response.body.status).to.be('OK');
-             	 expect(response.body.data.length).to.be(1);
-             	 
-        		 callback();
-       		 
-       	 	});
-        
-        });
-    });
+    
 
     describe('test-find', function() {
 
