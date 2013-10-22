@@ -11,6 +11,8 @@ describe('client-tests', function() {
 
     var createdId = null;
     
+    /*
+    
     describe('test-create', function() {
 
         it('should create object of User', function(callback) {
@@ -94,6 +96,8 @@ describe('client-tests', function() {
 
     });
     
+    */
+    
     describe('test-create-many-static', function() {
 
         it('should create 2 object of StaticTest', function(callback) {
@@ -132,7 +136,7 @@ describe('client-tests', function() {
         		 
         		 expect(response.error).to.be(null);
         		 expect(response.body.status).to.be('OK');
-             	 expect(response.body.data.length > 2).to.be(true);
+             	 expect(response.body.data.length == 2).to.be(true);
              	 
         		 callback();
         		 
@@ -141,6 +145,35 @@ describe('client-tests', function() {
         });
     });
   
+
+  
+    describe('test-harddelete-cached', function() {
+
+        it('should hard delete all objects of StaticTest', function (callback) {
+
+        	restack_client.DELETE('data', 'StaticTest', {}, {"delete-type":"hard"}, function(response){
+        		
+        		console.log(response.body);
+        		expect(response.body.data).to.be(2);
+        		
+        		if (response.error == null)
+        		{
+        			restack_client.GET('data', 'StaticTest',{}, {"include-deleted":true}, function(response){
+        				
+    					expect(response.body.data.length).to.be(0);
+    					console.log(response.body.data);
+    					
+    					callback();
+                		
+        			});	
+        		}
+        		else
+        			callback(response.error);
+        		
+        	});
+        });
+    });
+    
     /*
     
     describe('test-update', function() {
