@@ -3,7 +3,8 @@
   "description": "Client for restack API service",
   "version": "0.0.1",
   "dependencies": {
-    "request": "~2.27.0"
+    "request": "~2.27.0",
+    "node-uuid": "~1.4.1"
   },
   "devDependencies": {
     "mocha": "~1.12.0",

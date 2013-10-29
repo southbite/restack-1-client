@@ -24,7 +24,7 @@ describe('client-tests', function() {
             };
 
             //POST:function(area, type, data, headers, done){
-            restack_client.POST('data', 'User', user, null, function(response){
+            restack_client.POST('User', user, null, function(response){
             	
             	console.log(response.body);
             	expect(response.error).to.be(null);
@@ -41,7 +41,7 @@ describe('client-tests', function() {
             	user.username = 0;
             	
             	//check type constraint validation
-            	restack_client.POST('data', 'User', user, null, function(response){
+            	restack_client.POST('User', user, null, function(response){
             	
             		expect(response.body.status).to.be('FAILED');
                 	expect(response.body.data.checks.length > 0).to.be(true);	

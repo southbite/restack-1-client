@@ -25,7 +25,7 @@ describe('client-tests', function() {
                 lastname: 'surname'
             };
 
-            restack_client.POST('data', 'User', user, null, function(response){
+            restack_client.POST('User', user, null, function(response){
             	
             	console.log(response.body);
             	expect(response.error).to.be(null);
@@ -45,7 +45,7 @@ describe('client-tests', function() {
 
         it('should findOne object of User by ID', function (callback) {
 
-        	restack_client.GET('data', 'User', {id:createdId}, null, function(response){
+        	restack_client.GET('User', {id:createdId}, null, function(response){
         		  
         		 console.log(response.body);
         		 
@@ -81,7 +81,7 @@ describe('client-tests', function() {
             }];
 
             //POST:function(area, type, data, headers, done){
-            restack_client.POST('data', 'User', users, null, function(response){
+            restack_client.POST('User', users, null, function(response){
             	
             	console.log(response.body);
             	
@@ -111,7 +111,7 @@ describe('client-tests', function() {
             }];
 
             //POST:function(area, type, data, headers, done){
-            restack_client.POST('data', 'StaticTest', statics, null, function(response){
+            restack_client.POST('StaticTest', statics, null, function(response){
             	
             	console.log(response.body);
             	
@@ -130,7 +130,7 @@ describe('client-tests', function() {
 
         it('should find all objects of static', function (callback) {
 
-        	 restack_client.GET('data', 'StaticTest', null, null, function(response){
+        	 restack_client.GET('StaticTest', null, null, function(response){
         		 
         		 console.log(response.body);
         		 
@@ -151,14 +151,14 @@ describe('client-tests', function() {
 
         it('should hard delete all objects of StaticTest', function (callback) {
 
-        	restack_client.DELETE('data', 'StaticTest', {}, {"delete-type":"hard"}, function(response){
+        	restack_client.DELETE('StaticTest', {}, {"delete-type":"hard"}, function(response){
         		
         		console.log(response.body);
         		expect(response.body.data).to.be(2);
         		
         		if (response.error == null)
         		{
-        			restack_client.GET('data', 'StaticTest',{}, {"include-deleted":true}, function(response){
+        			restack_client.GET('StaticTest',{}, {"include-deleted":true}, function(response){
         				
     					expect(response.body.data.length).to.be(0);
     					console.log(response.body.data);
@@ -180,7 +180,7 @@ describe('client-tests', function() {
 
         it('should update the created user with a unique firstname, then get the user by that firstname', function (callback) {
         	
-        	restack_client.PUT('data', 'User', {id:createdId}, {firstname:'updated' + createdId}, null, function(response){
+        	restack_client.PUT('User', {id:createdId}, {firstname:'updated' + createdId}, null, function(response){
       		  
         		console.log(response.body);//response.body.data
         		console.log(response.body.data);//response.body.data
@@ -210,7 +210,7 @@ describe('client-tests', function() {
 
         it('should find all objects of User', function (callback) {
 
-        	 restack_client.GET('data', 'User', null, null, function(response){
+        	 restack_client.GET('User', null, null, function(response){
         		 
         		 console.log(response.body);
         		 
