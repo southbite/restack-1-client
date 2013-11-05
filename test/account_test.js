@@ -14,11 +14,11 @@ describe('client-tests', function() {
     var uniqueTestKey = uuid.v4();
     var userToken = null;
     var createdAccount = null;
-    
-    
-    
+   
     it('should create the test User', function(callback) {
 
+    	this.timeout(10000);
+    	
         var user = {
             emailaddress: 'southbite@gmail.com',
             username: 'User ' + uniqueTestKey,
@@ -28,27 +28,48 @@ describe('client-tests', function() {
 
         restack_client.POST('User', user, {"return-confirm-key":"true"}, function(response){
         	
-        	console.log(response.body);
+        	//console.log(response.body);
         	expect(response.error).to.be(null);
-        	createdUser = response.body.data;
-        	
-        	restack_client.GET('User', {confirmKey:response.body.data.confirmKey}, {}, function(response){
-        		expect(response.error).to.be(null);
-        		expect(response.body.data.emailaddress).to.be('southbite@gmail.com');//cool we are confirmed
-        		
-        		restack_client.POST('Login', createdUser, {}, function(response){
-        			expect(response.error).to.be(null);
-        			expect(response.body.data.token.length > 0).to.be(true);
-        			userToken = response.body.data.token;
-        		});
-        	});
+        	expect(response.body.data.length).to.be(1);
+        	createdUser = response.body.data[0];
         	
         	callback(response.error);
         	
-        });
+        }.bind(this)); 
 
     });
  
+
+    it('should confirm user', function(callback) {
+    	
+    	console.log(createdUser);
+    	
+    	restack_client.GET('User', {confirmKey:createdUser.confirmKey}, {}, function(response){
+    		expect(response.error).to.be(null);
+    		expect(response.body.data[0].status).to.be('Confirmed');//cool we are confirmed
+    		
+    		callback();
+    		
+    	}.bind(this));
+    	
+    });
+    
+
+    it('should log in', function(callback) {
+    	
+    	restack_client.POST('Login', {secret:uniqueTestKey, username:createdUser.username}, {}, function(response){
+			expect(response.error).to.be(null);
+			expect(response.body.data[0].token.length > 0).to.be(true);
+			userToken = response.body.data[0].token;
+			
+			console.log('logged in and have token ' + response.body.data[0].token);
+			
+			callback();
+			
+		}.bind(this));
+    	
+    });
+
     
     it('should create the test Account', function(callback) {
 
@@ -69,11 +90,13 @@ describe('client-tests', function() {
 
     });
     
-	describe('test-harddelete-useraccountss', function() {
+    /*
+    
+	describe('test-harddelete-useraccounts', function() {
 
         it('should hard delete all objects of UserAccount', function (callback) {
 
-        	restack_client.DELETE('UserAccount', {}, {"delete-type":"hard"}, function(response){
+        	restack_client.DELETE('UserAccount', {}, {"delete-type":"hard", token:userToken}, function(response){
         		
         		expect(response.error).to.be(null);
         		console.log(response.body.data + ' UserAccounts deleted');
@@ -87,7 +110,7 @@ describe('client-tests', function() {
 
         it('should hard delete all objects of User', function (callback) {
 
-        	restack_client.DELETE('User', {}, {"delete-type":"hard"}, function(response){
+        	restack_client.DELETE('User', {}, {"delete-type":"hard", token:userToken}, function(response){
         		
         		expect(response.error).to.be(null);
         		console.log(response.body.data + ' Users deleted');
@@ -101,7 +124,7 @@ describe('client-tests', function() {
 
         it('should hard delete all objects of Account', function (callback) {
 
-        	restack_client.DELETE('Account', {}, {"delete-type":"hard"}, function(response){
+        	restack_client.DELETE('Account', {}, {"delete-type":"hard", token:userToken}, function(response){
         		
         		expect(response.error).to.be(null);
         		console.log(response.body.data + ' Accounts deleted');
@@ -110,5 +133,7 @@ describe('client-tests', function() {
         	});
         });
     });
+
+*/
 
 });
