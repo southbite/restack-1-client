@@ -14,7 +14,8 @@ describe('client-tests', function() {
     var uniqueTestKey = uuid.v4();
     var userToken = null;
     var createdAccount = null;
-   
+    var testObjectId = null;
+    
     it('should create the test User', function(callback) {
 
     	this.timeout(10000);
@@ -30,6 +31,7 @@ describe('client-tests', function() {
         	
         	//console.log(response.body);
         	expect(response.error).to.be(null);
+        	expect(response.body.status).to.be('OK');
         	expect(response.body.data.length).to.be(1);
         	createdUser = response.body.data[0];
         	
@@ -46,6 +48,7 @@ describe('client-tests', function() {
     	
     	restack_client.GET('User', {confirmKey:createdUser.confirmKey}, {}, function(response){
     		expect(response.error).to.be(null);
+    		expect(response.body.status).to.be('OK');
     		expect(response.body.data[0].status).to.be('Confirmed');//cool we are confirmed
     		
     		callback();
@@ -59,6 +62,7 @@ describe('client-tests', function() {
     	
     	restack_client.POST('Login', {secret:uniqueTestKey, username:createdUser.username}, {}, function(response){
 			expect(response.error).to.be(null);
+			expect(response.body.status).to.be('OK');
 			expect(response.body.data[0].token.length > 0).to.be(true);
 			userToken = response.body.data[0].token;
 			
@@ -82,10 +86,37 @@ describe('client-tests', function() {
         	
         	console.log(response.body);
         	expect(response.error).to.be(null);
-        	createdAccount = response.body.data;
+        	expect(response.body.status).to.be('OK');
+        	expect(response.body.data.length == 1).to.be(true);
+        	createdAccount = response.body.data[0];
         	
         	callback(response.error);
         	
+        });
+
+    });
+    
+    describe('test-create', function() {
+
+        it('should create object of Test', function(callback) {
+
+            var testObject = {
+                testProperty1: 'test@example.com',
+                testProperty2: 'test@example.com'
+            };
+
+            restack_client.POST('Test', testObject, {token:userToken, 'user-account':createdAccount.userAccount.id}, function(response){
+            	
+            	console.log(response.body);
+            	expect(response.error).to.be(null);
+            	expect(response.body.status).to.be('OK');
+            	if (response.error == null)
+            		testObjectId = response.body.data[0].id;
+            	
+            	callback(response.error);
+            	
+            });
+
         });
 
     });

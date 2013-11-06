@@ -11,7 +11,7 @@ describe('client-tests', function() {
 
     var createdId = null;
     
-    /*
+
     
     describe('test-create', function() {
 
@@ -96,8 +96,6 @@ describe('client-tests', function() {
 
     });
     
-    */
-    
     describe('test-create-many-static', function() {
 
         it('should create 2 object of StaticTest', function(callback) {
@@ -174,7 +172,7 @@ describe('client-tests', function() {
         });
     });
     
-    /*
+
     
     describe('test-update', function() {
 
@@ -254,7 +252,7 @@ describe('client-tests', function() {
         });
     });
     
-    */
+
     
     /*
     
