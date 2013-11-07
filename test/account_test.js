@@ -16,6 +16,12 @@ describe('client-tests', function() {
     var createdAccount = null;
     var testObjectId = null;
     
+    var createdUserOther = null;
+    var uniqueTestKeyOther = uuid.v4();
+    var userTokenOther = null;
+    var createdAccountOther = null;
+    var testObjectIdOther = null;
+    
     it('should create the test User', function(callback) {
 
     	this.timeout(10000);
@@ -57,14 +63,70 @@ describe('client-tests', function() {
     	
     });
     
+    it('should create the other test User', function(callback) {
 
-    it('should log in', function(callback) {
+    	this.timeout(10000);
+    	
+        var user = {
+            emailaddress: 'southbite@gmail.com',
+            username: 'User ' + uniqueTestKeyOther,
+            secret: uniqueTestKeyOther,
+            names: 'Simon Bishop'
+        };
+
+        restack_client.POST('User', user, {"return-confirm-key":"true"}, function(response){
+        	
+        	//console.log(response.body);
+        	expect(response.error).to.be(null);
+        	expect(response.body.status).to.be('OK');
+        	expect(response.body.data.length).to.be(1);
+        	createdUserOther = response.body.data[0];
+        	
+        	callback(response.error);
+        	
+        }.bind(this)); 
+
+    });
+ 
+
+    it('should confirm the other user', function(callback) {
+    	
+    	console.log(createdUser);
+    	
+    	restack_client.GET('User', {confirmKey:createdUserOther.confirmKey}, {}, function(response){
+    		expect(response.error).to.be(null);
+    		expect(response.body.status).to.be('OK');
+    		expect(response.body.data[0].status).to.be('Confirmed');//cool we are confirmed
+    		
+    		callback();
+    		
+    	}.bind(this));
+    	
+    });
+
+    it('should log in the main user', function(callback) {
     	
     	restack_client.POST('Login', {secret:uniqueTestKey, username:createdUser.username}, {}, function(response){
 			expect(response.error).to.be(null);
 			expect(response.body.status).to.be('OK');
 			expect(response.body.data[0].token.length > 0).to.be(true);
 			userToken = response.body.data[0].token;
+			
+			console.log('logged in and have token ' + response.body.data[0].token);
+			
+			callback();
+			
+		}.bind(this));
+    	
+    });
+    
+it('should log in the other user', function(callback) {
+    	
+    	restack_client.POST('Login', {secret:uniqueTestKeyOther, username:createdUserOther.username}, {}, function(response){
+			expect(response.error).to.be(null);
+			expect(response.body.status).to.be('OK');
+			expect(response.body.data[0].token.length > 0).to.be(true);
+			userTokenOther = response.body.data[0].token;
 			
 			console.log('logged in and have token ' + response.body.data[0].token);
 			
@@ -112,6 +174,30 @@ describe('client-tests', function() {
             	expect(response.body.status).to.be('OK');
             	if (response.error == null)
             		testObjectId = response.body.data[0].id;
+            	
+            	callback(response.error);
+            	
+            });
+
+        });
+
+    });
+    
+    describe('test-create-fail', function() {
+
+        it('should fail to create object of Test', function(callback) {
+
+            var testObject = {
+                testProperty1: 'test@example.com',
+                testProperty2: 'test@example.com'
+            };
+
+            restack_client.POST('Test', testObject, {token:userTokenOther, 'user-account':createdAccount.userAccount.id}, function(response){
+            	
+            	console.log(response.body);
+            	expect(response.error).to.be(null);
+            	expect(response.body.status).to.be('FAILED');
+            	console.log(response.body.status);
             	
             	callback(response.error);
             	
