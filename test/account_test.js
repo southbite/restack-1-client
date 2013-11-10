@@ -207,6 +207,72 @@ it('should log in the other user', function(callback) {
 
     });
     
+    describe('test-create-many-static', function() {
+
+        it('should create 2 object of StaticTest', function(callback) {
+
+            var statics = [{
+                property1: 'value1',
+                property2: 'value2'
+            },{
+                property1: 'value1',
+                property2: 'value2'
+            }];
+
+            //POST:function(area, type, data, headers, done){
+            restack_client.POST('StaticTest', statics, {token:userToken, 'user-account':createdAccount.userAccount.id}, function(response){
+            	
+            	console.log(response.body);
+            	
+            	expect(response.error).to.be(null);
+            	expect(response.body.status).to.be('OK');
+            	expect(response.body.data.length).to.be(2);
+            	
+            	callback();
+            });
+            
+        });
+
+    });
+    
+    describe('test-getAll', function() {
+
+        it('should find all objects of static', function (callback) {
+
+        	 restack_client.GET('StaticTest', null, {token:userToken, 'user-account':createdAccount.userAccount.id}, function(response){
+        		 
+        		 console.log(response.body);
+        		 
+        		 expect(response.error).to.be(null);
+        		 expect(response.body.status).to.be('OK');
+             	 expect(response.body.data.length == 2).to.be(true);
+             	 
+        		 callback();
+        		 
+        	 });
+        	
+        });
+    });
+    
+    describe('test-getAll', function() {
+
+        it('should find all objects of static', function (callback) {
+
+        	 restack_client.GET('StaticTest', null, {token:userToken, 'user-account':createdAccount.userAccount.id}, function(response){
+        		 
+        		 console.log(response.body);
+        		 
+        		 expect(response.error).to.be(null);
+        		 expect(response.body.status).to.be('OK');
+             	 expect(response.body.data.length == 2).to.be(true);
+             	 
+        		 callback();
+        		 
+        	 });
+        	
+        });
+    });
+    
     /*
     
 	describe('test-harddelete-useraccounts', function() {
