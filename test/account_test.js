@@ -273,6 +273,43 @@ it('should log in the other user', function(callback) {
         });
     });
     
+    describe('test-check concurrency', function() {
+
+        it('should create and update an object called ConcurrencyTest', function (callback) {
+
+        	var concurrencyObject;
+        	
+        	var testObject = {
+        			property1: 'property1Val',
+        			property2: 'property2Val'
+                };
+
+                restack_client.POST('ConcurrencyTest', testObject, {token:userToken, 'user-account':createdAccount.userAccount.id}, function(response){
+                	
+                	console.log(response.body);
+                	expect(response.error).to.be(null);
+                	expect(response.body.status).to.be('OK');
+                	if (response.error == null)
+                		concurrencyObject = response.body.data[0];
+                	
+                	restack_client.PUT('ConcurrencyTest', {id:concurrencyObject.id}, concurrencyObject, {token:userToken, 'user-account':createdAccount.userAccount.id}, function(response){
+                		  
+                		console.log(response.body);//response.body.data
+                		console.log(response.body.data);//response.body.data
+                		expect(response.error).to.be(null);
+                		expect(response.body.data).to.be(1);
+                		
+                		callback(response.error);
+               		 
+               	 	});
+                	
+                	
+                	
+                });
+        	
+        });
+    });
+    
     /*
     
 	describe('test-harddelete-useraccounts', function() {
