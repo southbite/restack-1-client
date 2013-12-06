@@ -251,7 +251,7 @@ it('should log in the other user', function(callback) {
         		 
         		 expect(response.error).to.be(null);
         		 expect(response.body.status).to.be('OK');
-             	 expect(response.body.data.length == 2).to.be(true);
+             	 expect(response.body.data.length > 0).to.be(true);
              	 
         		 callback();
         		 
@@ -270,7 +270,7 @@ it('should log in the other user', function(callback) {
         		 
         		 expect(response.error).to.be(null);
         		 expect(response.body.status).to.be('OK');
-             	 expect(response.body.data.length == 2).to.be(true);
+             	 expect(response.body.data.length > 0).to.be(true);
              	 
         		 callback();
         		 
@@ -371,7 +371,7 @@ it('should log in the other user', function(callback) {
         		 
         		 expect(response.error).to.be(null);
         		 expect(response.body.status).to.be('OK');
-             	 expect(response.body.data.length == 2).to.be(true);
+             	 expect(response.body.data.length > 0).to.be(true);
              	 
         		 callback();
         		 
