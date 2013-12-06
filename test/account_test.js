@@ -48,6 +48,7 @@ describe('client-tests', function() {
     });
  
 
+    
     it('should confirm user', function(callback) {
     	
     	//console.log(createdUser);
@@ -104,6 +105,8 @@ describe('client-tests', function() {
     	
     });
 
+
+    
     it('should log in the main user', function(callback) {
     	
     	restack_client.POST('Login', {secret:uniqueTestKey, username:createdUser.username}, {}, function(response){
@@ -119,6 +122,8 @@ describe('client-tests', function() {
 		}.bind(this));
     	
     });
+  
+
     
 it('should log in the other user', function(callback) {
     	
@@ -136,7 +141,7 @@ it('should log in the other user', function(callback) {
     	
     });
 
-    
+
     it('should create the test Account', function(callback) {
 
         var account = {
@@ -157,7 +162,7 @@ it('should log in the other user', function(callback) {
         });
 
     });
-    
+
     describe('test-create', function() {
 
         it('should create object of Test', function(callback) {
@@ -183,6 +188,7 @@ it('should log in the other user', function(callback) {
 
     });
     
+
     describe('test-create-fail', function() {
 
         it('should fail to create object of Test', function(callback) {
@@ -324,6 +330,132 @@ it('should log in the other user', function(callback) {
        	 	});
         	
         });
+    });
+    
+    
+    describe('test-create-path', function() {
+
+        it('should create 2 objects of StaticTest/StaticTestChildren', function(callback) {
+
+            var statics = [{
+                property1: 'value1',
+                property2: 'value2'
+            },{
+                property1: 'value1',
+                property2: 'value2'
+            }];
+
+            //POST:function(area, type, data, headers, done){
+            restack_client.POST('StaticTest/StaticTestChildren', statics, {token:userToken, 'user-account':createdAccount.userAccount.id}, function(response){
+            	
+            	//console.log(response.body);
+            	
+            	expect(response.error).to.be(null);
+            	expect(response.body.status).to.be('OK');
+            	expect(response.body.data.length).to.be(2);
+            	
+            	callback();
+            });
+            
+        });
+
+    });
+    
+    describe('test-getall-path', function() {
+
+        it('should find all objects of StaticTest/StaticTestChildren', function (callback) {
+
+        	 restack_client.GET('StaticTest/StaticTestChildren', null, {token:userToken, 'user-account':createdAccount.userAccount.id}, function(response){
+        		 
+        		 //console.log(response.body);
+        		 
+        		 expect(response.error).to.be(null);
+        		 expect(response.body.status).to.be('OK');
+             	 expect(response.body.data.length == 2).to.be(true);
+             	 
+        		 callback();
+        		 
+        	 });
+        	
+        });
+    });
+    
+    describe('test-archive', function() {
+
+        it('should create an archived object', function (callback) {
+
+        	   var archiveMe = {
+                   property1: 'value1',
+                   property2: 'value2'
+               };
+        	
+        	   restack_client.POST('ArchiveTest', archiveMe, {token:userToken}, function(response){
+               	
+	               	console.log(response.body);
+	               	expect(response.error).to.be(null);
+	               	expect(response.body.status).to.be('OK');
+	               	expect(response.body.data.length == 1).to.be(true);
+	               	var archived = response.body.data[0];
+	
+	                 restack_client.GET('Archive/ArchiveTest', {objectId:archived.id}, {token:userToken}, function(response){
+	            		 
+	            		 console.log(response.body);
+	            		 
+	            		 expect(response.error).to.be(null);
+	            		 expect(response.body.status).to.be('OK');
+	            		 
+	            		 console.log('checking length');
+	                 	 expect(response.body.data.length == 1).to.be(true);
+	                 	 
+	                 	 var archiveRecord = response.body.data[0];
+	                 	 expect(archiveRecord.data.id == archived.id).to.be(true);
+	                 	 
+	            		 callback();
+	            		 
+	            	 });
+	
+	               	
+             });
+         });
+    });
+    
+    
+    describe('test-audit', function() {
+
+        it('should create an archived object', function (callback) {
+
+        	   var auditMe = {
+                   property1: 'value1',
+                   property2: 'value2'
+               };
+        	
+        	   restack_client.POST('AuditTest', auditMe, {token:userToken}, function(response){
+               	
+	               	console.log(response.body);
+	               	expect(response.error).to.be(null);
+	               	expect(response.body.status).to.be('OK');
+	               	expect(response.body.data.length == 1).to.be(true);
+	               	
+	               	var audited = response.body.data[0];
+	               	
+		            restack_client.GET('Audit/AuditTest', {objectId:audited.id}, {token:userToken}, function(response){
+		           		 
+		           		 console.log(response.body);
+		           		 
+		           		 expect(response.error).to.be(null);
+		           		 expect(response.body.status).to.be('OK');
+		                 expect(response.body.data.length == 1).to.be(true);
+		                 
+		                 var auditRecord = response.body.data[0];
+		                 
+		                 expect(auditRecord.objectId == audited.id).to.be(true);
+	
+		                 callback();
+		                 
+		           	 });
+	               	
+             });
+         });
     });
     
     
